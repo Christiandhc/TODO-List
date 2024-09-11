@@ -2,18 +2,17 @@ package molde;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class Tarefa {
 
-    // Atributos privados que definem as características de uma tarefa.
-    private String nome; // Nome da tarefa.
-    private String descricao; // Descrição detalhada da tarefa.
-    private LocalDate dataTermino; // Data de término da tarefa.
-    private int prioridade; // Nível de prioridade (1 a 5).
-    private String categoria; // Categoria da tarefa (ex.: Trabalho, Pessoal).
-    private Status status; // Status da tarefa (TODO, DOING, DONE).
+    private String nome;
+    private String descricao;
+    private LocalDate dataTermino;
+    private int prioridade;
+    private String categoria;
+    private Status status;
 
-    // Construtor que inicializa os atributos da tarefa
     public Tarefa(String nome, String descricao, LocalDate dataTermino, int prioridade, String categoria, Status status) {
         this.nome = nome;
         this.descricao = descricao;
@@ -22,8 +21,6 @@ public class Tarefa {
         this.categoria = categoria;
         this.status = status;
     }
-
-    // Métodos getters e setters para acessar e modificar os atributos.
 
     public String getNome() {
         return nome;
@@ -73,10 +70,83 @@ public class Tarefa {
         this.status = status;
     }
 
+    public void atualizarTarefa() {
+        Scanner scanner = new Scanner(System.in);
+        boolean sair = false;
+
+        while (!sair) {
+            System.out.println("Selecione o campo que deseja atualizar:");
+            System.out.println("1 - Nome");
+            System.out.println("2 - Descrição");
+            System.out.println("3 - Data de Término (formato dd-MM-yyyy)");
+            System.out.println("4 - Prioridade");
+            System.out.println("5 - Categoria");
+            System.out.println("6 - Status (TO_DO, DOING, DONE)");
+            System.out.println("7 - Sair");
+
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Digite o novo nome: ");
+                    String novoNome = scanner.nextLine();
+                    setNome(novoNome);
+                    System.out.println("Nome atualizado.");
+                    break;
+                case 2:
+                    System.out.print("Digite a nova descrição: ");
+                    String novaDescricao = scanner.nextLine();
+                    setDescricao(novaDescricao);
+                    System.out.println("Descrição atualizada.");
+                    break;
+                case 3:
+                    System.out.print("Digite a nova data de término (formato dd-MM-yyyy): ");
+                    String novaData = scanner.nextLine();
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                        LocalDate novaDataTermino = LocalDate.parse(novaData, formatter);
+                        setDataTermino(novaDataTermino);
+                        System.out.println("Data de término atualizada.");
+                    } catch (Exception e) {
+                        System.out.println("Formato de data inválido.");
+                    }
+                    break;
+                case 4:
+                    System.out.print("Digite a nova prioridade: ");
+                    int novaPrioridade = scanner.nextInt();
+                    setPrioridade(novaPrioridade);
+                    System.out.println("Prioridade atualizada.");
+                    break;
+                case 5:
+                    System.out.print("Digite a nova categoria: ");
+                    String novaCategoria = scanner.nextLine();
+                    setCategoria(novaCategoria);
+                    System.out.println("Categoria atualizada.");
+                    break;
+                case 6:
+                    System.out.print("Digite o novo status (TO_DO, DOING, DONE): ");
+                    String novoStatus = scanner.nextLine().toUpperCase();
+                    try {
+                        setStatus(Status.valueOf(novoStatus));
+                        System.out.println("Status atualizado.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Status inválido. Use TO_DO, DOING ou DONE.");
+                    }
+                    break;
+                case 7:
+                    sair = true;
+                    System.out.println("Atualização concluída.");
+                    break;
+                default:
+                    System.out.println("Opção inválida, tente novamente.");
+            }
+        }
+    }
+
     // Método sobrescrito para representar a tarefa como uma string legível.
     @Override
     public String toString() {
-        // Define o formato da data para "dd-MM-yyyy"
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return String.format(
                 "Tarefa{nome='%s', descricao='%s', dataTermino=%s, prioridade=%d, categoria='%s', status=%s}",
@@ -84,4 +154,3 @@ public class Tarefa {
         );
     }
 }
-

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 
-
 /*------------------------------------------------------------*
  *      Classe responsável por gerenciar as tarefas.          *
  *                                                            *
@@ -17,24 +16,14 @@ import java.time.LocalDate;
  *------------------------------------------------------------*/
 public class GerenciadorTarefas {
 
-    // Lista que armazena todas as tarefas em memória
-    private List<Tarefa> tarefas;
-
-    // Nome do arquivo onde as tarefas serão persistidas
+    private final List<Tarefa> tarefas;
     private static final String NOME_ARQUIVO = "tarefas.csv";
 
-    // Construtor que inicializa a lista de tarefas e carrega as tarefas salvas
     public GerenciadorTarefas() {
         tarefas = new ArrayList<>();
         carregarTarefas();
     }
 
-    /**
-     * Método para adicionar uma nova tarefa ao repositório.
-     * A tarefa é inserida na posição correta com base na prioridade.
-     *
-     * @param tarefa A tarefa a ser adicionada.
-     */
     public void adicionarTarefa(Tarefa tarefa) {
         int posicaoInserir = 0;
         for (Tarefa t : tarefas) {
@@ -47,12 +36,6 @@ public class GerenciadorTarefas {
         salvarTarefas();
     }
 
-    /**
-     * Método para remover uma tarefa do repositório.
-     *
-     * @param nome Nome da tarefa a ser removida.
-     * @return true se a tarefa foi removida com sucesso, false caso contrário.
-     */
     public boolean removerTarefa(String nome) {
         for (Tarefa t : tarefas) {
             if (t.getNome().equals(nome)) {
@@ -64,16 +47,9 @@ public class GerenciadorTarefas {
         return false;
     }
 
-    /**
-     * Método para listar todas as tarefas.
-     *
-     * @return Uma lista de todas as tarefas.
-     */
     public List<Tarefa> listarTarefas() {
         return tarefas;
     }
-
-    //Método para atualizar as tarefas
 
     public boolean atualizarTarefa(String nome, Tarefa tarefaAtualizada) {
         for (int i = 0; i < tarefas.size(); i++) {
@@ -87,11 +63,15 @@ public class GerenciadorTarefas {
         return false;
     }
 
+    public Tarefa buscarTarefa(String nome) {
+        for (Tarefa t : tarefas) {
+            if (t.getNome().equals(nome)) {
+                return t;
+            }
+        }
+        return null;
+    }
 
-    /**
-     * Método para salvar as tarefas no arquivo CSV.
-     * Cada tarefa é salva em uma linha separada, com seus atributos separados por vírgulas.
-     */
     private void salvarTarefas() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(NOME_ARQUIVO))) {
             for (Tarefa t : tarefas) {
@@ -110,14 +90,11 @@ public class GerenciadorTarefas {
         }
     }
 
-    /**
-     * Método para carregar tarefas do arquivo CSV.
-     * As tarefas são lidas e adicionadas à lista de tarefas.
-     */
+
     private void carregarTarefas() {
         File arquivo = new File(NOME_ARQUIVO);
         if (!arquivo.exists()) {
-            return; // Arquivo não existe, nada para carregar
+            return;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {

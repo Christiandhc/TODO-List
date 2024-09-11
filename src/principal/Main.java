@@ -14,9 +14,9 @@ import java.util.Scanner;
  * Fornece um menu simples no terminal para interagir com o usuário.   *
  *---------------------------------------------------------------------*/
 public class Main {
-    private static GerenciadorTarefas gerenciador = new GerenciadorTarefas();
-    private static Scanner scanner = new Scanner(System.in);
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final GerenciadorTarefas gerenciador = new GerenciadorTarefas();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public static void main(String[] args) {
         while (true) {
@@ -76,10 +76,10 @@ public class Main {
         int opcao = -1;
         try {
             opcao = scanner.nextInt();
-            scanner.nextLine();  // Limpando buffer de entrada para remover quebra de linha pendente.
+            scanner.nextLine();
         } catch (Exception e) {
             System.out.println("Entrada inválida. Tente novamente.");
-            scanner.nextLine();  // Limpa a entrada inválida
+            scanner.nextLine();
         }
         return opcao;
     }
@@ -87,27 +87,34 @@ public class Main {
     private static void adicionarTarefa() {
         System.out.print("Nome da tarefa: ");
         String nome = scanner.nextLine();
+
         System.out.print("Descrição da tarefa: ");
         String descricao = scanner.nextLine();
+
         System.out.print("Data de término (DD-MM-AAAA): ");
-        LocalDate dataTermino = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        LocalDate dataTermino;
         try {
-            dataTermino = LocalDate.parse(scanner.nextLine());
+            String dataInput = scanner.nextLine();
+            dataTermino = LocalDate.parse(dataInput, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         } catch (Exception e) {
             System.out.println("Data inválida. Usando a data atual.");
+            dataTermino = LocalDate.now();
         }
+
         System.out.print("Prioridade (1 a 5): ");
-        int prioridade = 1; // Define uma prioridade padrão
+        int prioridade = 1;
         try {
             prioridade = scanner.nextInt();
         } catch (Exception e) {
             System.out.println("Prioridade inválida. Usando prioridade 1.");
         }
-        scanner.nextLine();  // Consome a quebra de linha
+        scanner.nextLine();
+
         System.out.print("Categoria: ");
         String categoria = scanner.nextLine();
+
         System.out.print("Status (TODO, DOING, DONE): ");
-        Status status = Status.TODO; // Define um status padrão
+        Status status = Status.TODO;
         try {
             status = Status.valueOf(scanner.nextLine().toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -118,6 +125,7 @@ public class Main {
         gerenciador.adicionarTarefa(tarefa);
         System.out.println("Tarefa adicionada com sucesso.");
     }
+
 
     private static void removerTarefa() {
         System.out.print("Nome da tarefa a ser removida: ");
@@ -151,13 +159,13 @@ public class Main {
 
     private static void listarTarefasPorPrioridade() {
         System.out.print("Prioridade para listar (1 a 5): ");
-        int prioridade = 1; // Define uma prioridade padrão
+        int prioridade = 1;
         try {
             prioridade = scanner.nextInt();
         } catch (Exception e) {
             System.out.println("Prioridade inválida. Usando prioridade 1.");
         }
-        scanner.nextLine();  // Consome a quebra de linha
+        scanner.nextLine();
         List<Tarefa> tarefas = gerenciador.listarTarefas();
         for (Tarefa t : tarefas) {
             if (t.getPrioridade() == prioridade) {
@@ -169,7 +177,7 @@ public class Main {
 
     private static void listarTarefasPorStatus() {
         System.out.print("Status para listar (TODO, DOING, DONE): ");
-        Status status = Status.TODO; // Define um status padrão
+        Status status = Status.TODO;
         try {
             status = Status.valueOf(scanner.nextLine().toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -198,26 +206,61 @@ public class Main {
         System.out.print("Nome da tarefa a ser atualizada: ");
         String nome = scanner.nextLine();
 
-        // Coleta os novos dados para a tarefa
-        System.out.print("Nova descrição da tarefa: ");
-        String descricao = scanner.nextLine();
-        System.out.print("Nova data de término (dd-MM-yyyy): ");
-        LocalDate dataTermino = LocalDate.parse(scanner.nextLine(), formatter);
-        System.out.print("Nova prioridade (1 a 5): ");
-        int prioridade = scanner.nextInt();
-        scanner.nextLine();  // Consome a quebra de linha
-        System.out.print("Nova categoria: ");
-        String categoria = scanner.nextLine();
-        System.out.print("Novo status (TODO, DOING, DONE): ");
-        Status status = Status.valueOf(scanner.nextLine().toUpperCase());
+        Tarefa tarefa = gerenciador.buscarTarefa(nome);
+        if (tarefa == null) {
+            System.out.println("Tarefa não encontrada.");
+            return;
+        }
+
+        System.out.println("Deseja atualizar a descrição atual: " + tarefa.getDescricao() + "? (S/N)");
+        String resposta = scanner.nextLine();
+        String descricao = tarefa.getDescricao();
+        if (resposta.equalsIgnoreCase("S")) {
+            System.out.print("Nova descrição da tarefa: ");
+            descricao = scanner.nextLine();
+        }
+
+        System.out.println("Deseja atualizar a data de término atual: " + tarefa.getDataTermino().format(formatter) + "? (S/N)");
+        resposta = scanner.nextLine();
+        LocalDate dataTermino = tarefa.getDataTermino();
+        if (resposta.equalsIgnoreCase("S")) {
+            System.out.print("Nova data de término (dd-MM-yyyy): ");
+            dataTermino = LocalDate.parse(scanner.nextLine(), formatter);
+        }
+
+        System.out.println("Deseja atualizar a prioridade atual: " + tarefa.getPrioridade() + "? (S/N)");
+        resposta = scanner.nextLine();
+        int prioridade = tarefa.getPrioridade();
+        if (resposta.equalsIgnoreCase("S")) {
+            System.out.print("Nova prioridade (1 a 5): ");
+            prioridade = scanner.nextInt();
+            scanner.nextLine(); // Limpar buffer
+        }
+
+        System.out.println("Deseja atualizar a categoria atual: " + tarefa.getCategoria() + "? (S/N)");
+        resposta = scanner.nextLine();
+        String categoria = tarefa.getCategoria();
+        if (resposta.equalsIgnoreCase("S")) {
+            System.out.print("Nova categoria: ");
+            categoria = scanner.nextLine();
+        }
+
+        System.out.println("Deseja atualizar o status atual: " + tarefa.getStatus() + "? (S/N)");
+        resposta = scanner.nextLine();
+        Status status = tarefa.getStatus();
+        if (resposta.equalsIgnoreCase("S")) {
+            System.out.print("Novo status (TODO, DOING, DONE): ");
+            status = Status.valueOf(scanner.nextLine().toUpperCase());
+        }
 
         Tarefa tarefaAtualizada = new Tarefa(nome, descricao, dataTermino, prioridade, categoria, status);
 
         if (gerenciador.atualizarTarefa(nome, tarefaAtualizada)) {
             System.out.println("Tarefa atualizada com sucesso.");
         } else {
-            System.out.println("Tarefa não encontrada.");
+            System.out.println("Erro ao atualizar a tarefa.");
         }
     }
+
 }
 
