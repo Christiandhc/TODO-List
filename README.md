@@ -1,4 +1,6 @@
 # TODO List
+**Desenvolvedor:** [Christian Barbosa]  
+**Status:** Em construção
 
 Uma aplicação de lista de tarefas (TODO list) desenvolvida em Java. Este projeto permite criar, atualizar, remover e listar tarefas, além de visualizar o número de tarefas por status.
 
