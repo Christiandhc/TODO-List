@@ -1,5 +1,3 @@
-package principal;
-
 import molde.Tarefa;
 import molde.Status;
 import controle.GerenciadorTarefas;
