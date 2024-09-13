@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="minion-left.png" alt="Minion Left" class="minion-left">
+        <img src="minion-right.png" alt="Minion Right" class="minion-right">
+        <h1>TODO List</h1>
+    </header>
+
+    <main>
+        <section class="task-form">
+            <h2>Adicionar/Editar Tarefa</h2>
+            <form id="task-form">
+                <input type="text" id="task-name" placeholder="Nome da Tarefa" required>
+                <input type="text" id="task-desc" placeholder="Descrição">
+                <input type="date" id="task-date" placeholder="Data de Término">
+                <select id="task-priority">
+                    <option value="" disabled selected>Prioridade</option> 
+                    <option value="Baixa">Baixa</option>
+                    <option value="Média">Média</option>
+                    <option value="Alta">Alta</option>
+                </select>
+                <input type="text" id="task-category" placeholder="Categoria">
+                <select id="task-status">
+                    <option value="TODO">TODO</option>
+                    <option value="DOING">DOING</option>
+                    <option value="DONE">DONE</option>
+                </select>
+                <button type="submit">Salvar Tarefa</button>
+            </form>
+        </section>
+
+        <section class="filters">
+            <h2>Filtros</h2>
+            <div class="filter-controls">
+                <button id="filter-all">Todos</button>
+                <button id="filter-todo">TODO <span id="todo-count">0</span></button>
+                <button id="filter-doing">DOING <span id="doing-count">0</span></button>
+                <button id="filter-done">DONE <span id="done-count">0</span></button>
+                <input type="text" id="category-input" placeholder="Filtrar por Categoria">
+                <button id="filter-category">Filtrar</button>
+                <button id="clear-category-filter">Limpar Categoria</button>
+                <select id="priority-select">
+                    <option value="">Todas as Prioridades</option>
+                    <option value="Baixa">Baixa</option>
+                    <option value="Média">Média</option>
+                    <option value="Alta">Alta</option>
+                </select>
+                <button id="filter-priority">Filtrar</button>
+                <button id="clear-priority-filter">Limpar Prioridade</button>
+            </div>
+        </section>
+
+        <section class="task-list">
+            <h2>Lista de Tarefas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Data de Término</th>
+                        <th>Prioridade</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-table-body">
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

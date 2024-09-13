@@ -1,0 +1,159 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    color: #f0f0f0;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background: #333;
+    border-bottom: 2px solid #ffcc00;
+}
+
+h1 {
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #333;
+}
+
+h2 {
+    text-align: center;
+    color: #ffcc00;
+    margin-top: 0;
+}
+
+.task-form form {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+input, select, button {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+input, select {
+    border: 1px solid #555;
+    background: #222;
+    color: #f0f0f0;
+}
+
+button {
+    background-color: #014d8f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #1a4b76;
+}
+
+.filters {
+    background: #444;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.filters input, .filters select, .filters button {
+    background-color: #0F4C81;
+    color: #fff;
+    margin: 0 5px;
+}
+
+.filters button:hover {
+    background-color: #014d8f;
+}
+
+.filters input {
+    background: #222;
+    border: 1px solid #555;
+    width: 200px;
+}
+
+.filters select {
+    background: #222;
+    border: 1px solid #555;
+    width: 150px;
+}
+
+.task-list table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #222;
+}
+
+th, td {
+    border: 1px solid #555;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #444;
+}
+
+td {
+    color: #f0f0f0;
+}
+
+@media (max-width: 600px) {
+    .task-form form {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filters input, .filters select, .filters button {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+
+header {
+    position: relative;
+}
+
+.minion-left,
+.minion-right {
+    position: absolute;
+    top: 1px;
+    width: 80px; 
+    height: auto;
+}
+
+.minion-left {
+    left: 10px; 
+}
+
+.minion-right {
+    right: 10px; 
+}
