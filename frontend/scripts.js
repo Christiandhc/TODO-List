@@ -2,6 +2,7 @@ let tasks = [];
 let filteredTasks = [];
 let editIndex = -1;
 
+document.addEventListener('DOMContentLoaded', loadTasksFromLocalStorage);
 
 document.getElementById('task-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -22,10 +23,10 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         editIndex = -1;
     }
 
+    saveTasksToLocalStorage();
     applyFilters();  
     clearForm();
 });
-
 
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -50,12 +51,11 @@ function editTask(index) {
     editIndex = index;
 }
 
-
 function deleteTask(index) {
     tasks.splice(index, 1);
+    saveTasksToLocalStorage();
     applyFilters();  
 }
-
 
 function applyFilters() {
     const category = document.getElementById('category-input').value.toLowerCase();
@@ -79,6 +79,7 @@ function renderTasks(tasksToRender) {
         const row = document.createElement('tr');
 
         row.innerHTML = `
+            <td><input type="checkbox" class="task-checkbox" data-index="${index}"></td>
             <td>${task.nome}</td>
             <td>${task.descricao}</td>
             <td>${formatDate(task.dataTermino)}</td>
@@ -104,6 +105,33 @@ function updateTaskCounts() {
     document.getElementById('doing-count').textContent = doingCount;
     document.getElementById('done-count').textContent = doneCount;
 }
+
+document.getElementById('select-all-checkbox').addEventListener('change', function() {
+    const allChecked = this.checked;
+    const checkboxes = document.querySelectorAll('.task-checkbox');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = allChecked;
+    });
+});
+
+document.getElementById('update-status').addEventListener('click', function() {
+    const selectedTasks = Array.from(document.querySelectorAll('.task-checkbox:checked'));
+    const newStatus = document.getElementById('bulk-status').value;
+
+    if (!newStatus) {
+        alert("Por favor, selecione um status.");
+        return;
+    }
+
+    selectedTasks.forEach(checkbox => {
+        const taskIndex = checkbox.getAttribute('data-index');
+        tasks[taskIndex].status = newStatus; 
+    });
+
+    saveTasksToLocalStorage();
+    applyFilters();  
+});
 
 document.getElementById('filter-all').addEventListener('click', () => {
     filteredTasks = tasks.slice(); 
@@ -142,3 +170,15 @@ document.getElementById('clear-priority-filter').addEventListener('click', () =>
     document.getElementById('priority-select').value = '';
     applyFilters();
 });
+
+function saveTasksToLocalStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasksFromLocalStorage() {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+        tasks = JSON.parse(storedTasks);
+        applyFilters();  
+    }
+}

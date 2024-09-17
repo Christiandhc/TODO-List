@@ -62,6 +62,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="select-all-checkbox"></th>
                         <th>Nome</th>
                         <th>Descrição</th>
                         <th>Data de Término</th>
@@ -74,6 +75,16 @@
                 <tbody id="tasks-table-body">
                 </tbody>
             </table>
+
+            <div class="bulk-status-update">
+                <select id="bulk-status">
+                    <option value="" disabled selected>Alterar Status Para</option>
+                    <option value="TODO">TODO</option>
+                    <option value="DOING">DOING</option>
+                    <option value="DONE">DONE</option>
+                </select>
+                <button id="update-status">Alterar Status</button>
+            </div>
         </section>
     </main>
 
