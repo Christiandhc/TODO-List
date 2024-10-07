@@ -16,6 +16,28 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         status: document.getElementById('task-status').value
     };
 
+
+    const today = new Date().toISOString().split('T')[0];
+    const taskDate = taskData.dataTermino;
+
+
+    if (taskDate < today) {
+        alert('A data de término não pode ser anterior à data atual.');
+        return;
+    }
+
+    if (!['Baixa', 'Média', 'Alta'].includes(taskData.prioridade)) {
+        alert('Por favor, selecione um nível de prioridade.');
+        return;
+    }
+
+
+    const categoriaRegex = /^[A-Za-zÀ-ú\s]+$/;
+    if (!categoriaRegex.test(taskData.categoria)) {
+        alert('A categoria deve conter apenas letras e espaços.');
+        return;
+    }
+
     if (editIndex === -1) {
         tasks.push(taskData);  
     } else {
@@ -30,9 +52,9 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
+    const day = ('0' + date.getUTCDate()).slice(-2);
+    const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+    const year = date.getUTCFullYear();
     return `${day}/${month}/${year}`;
 }
 

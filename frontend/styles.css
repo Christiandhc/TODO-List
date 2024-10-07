@@ -138,7 +138,6 @@ td {
     }
 }
 
-
 header {
     position: relative;
 }
@@ -157,4 +156,15 @@ header {
 
 .minion-right {
     right: 10px; 
+}
+
+
+.error-message {
+    color: #fd5564;
+    font-size: 14px;
+    background-color: rgba(255, 0, 0, 0.1); 
+    border: 1px solid #fd5564;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 4px;
 }
