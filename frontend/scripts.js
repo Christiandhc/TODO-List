@@ -1,6 +1,7 @@
 let tasks = [];
 let filteredTasks = [];
 let editIndex = -1;
+let editId = null;
 
 document.addEventListener('DOMContentLoaded', loadTasksFromLocalStorage);
 
@@ -8,6 +9,7 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
     event.preventDefault();
 
     const taskData = {
+        id: editId !== null ? editId : Date.now(),
         nome: document.getElementById('task-name').value,
         descricao: document.getElementById('task-desc').value,
         dataTermino: document.getElementById('task-date').value,
@@ -16,10 +18,8 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         status: document.getElementById('task-status').value
     };
 
-
     const today = new Date().toISOString().split('T')[0];
     const taskDate = taskData.dataTermino;
-
 
     if (taskDate < today) {
         alert('A data de término não pode ser anterior à data atual.');
@@ -31,7 +31,6 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         return;
     }
 
-
     const categoriaRegex = /^[A-Za-zÀ-ú\s]+$/;
     if (!categoriaRegex.test(taskData.categoria)) {
         alert('A categoria deve conter apenas letras e espaços.');
@@ -39,14 +38,18 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
     }
 
     if (editIndex === -1) {
-        tasks.push(taskData);  
+        tasks.push(taskData);
     } else {
-        tasks[editIndex] = taskData; 
+        const taskIndex = tasks.findIndex(task => task.id === editId);
+        if (taskIndex !== -1) {
+            tasks[taskIndex] = taskData;
+        }
         editIndex = -1;
+        editId = null;
     }
 
     saveTasksToLocalStorage();
-    applyFilters();  
+    applyFilters();
     clearForm();
 });
 
@@ -60,10 +63,12 @@ function formatDate(dateString) {
 
 function clearForm() {
     document.getElementById('task-form').reset();
+    editIndex = -1;
+    editId = null;
 }
 
 function editTask(index) {
-    const task = tasks[index];
+    const task = filteredTasks[index];
     document.getElementById('task-name').value = task.nome;
     document.getElementById('task-desc').value = task.descricao;
     document.getElementById('task-date').value = task.dataTermino;
@@ -71,12 +76,14 @@ function editTask(index) {
     document.getElementById('task-category').value = task.categoria;
     document.getElementById('task-status').value = task.status;
     editIndex = index;
+    editId = task.id;
 }
 
 function deleteTask(index) {
-    tasks.splice(index, 1);
+    const taskId = filteredTasks[index].id;
+    tasks = tasks.filter(task => task.id !== taskId);
     saveTasksToLocalStorage();
-    applyFilters();  
+    applyFilters();
 }
 
 function applyFilters() {
@@ -95,13 +102,13 @@ function applyFilters() {
 
 function renderTasks(tasksToRender) {
     const tbody = document.getElementById('tasks-table-body');
-    tbody.innerHTML = ''; 
+    tbody.innerHTML = '';
 
     tasksToRender.forEach((task, index) => {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-            <td><input type="checkbox" class="task-checkbox" data-index="${index}"></td>
+            <td><input type="checkbox" class="task-checkbox" data-id="${task.id}"></td>
             <td>${task.nome}</td>
             <td>${task.descricao}</td>
             <td>${formatDate(task.dataTermino)}</td>
@@ -147,16 +154,19 @@ document.getElementById('update-status').addEventListener('click', function() {
     }
 
     selectedTasks.forEach(checkbox => {
-        const taskIndex = checkbox.getAttribute('data-index');
-        tasks[taskIndex].status = newStatus; 
+        const taskId = checkbox.getAttribute('data-id');
+        const taskIndex = tasks.findIndex(task => task.id === parseInt(taskId));
+        if (taskIndex !== -1) {
+            tasks[taskIndex].status = newStatus;
+        }
     });
 
     saveTasksToLocalStorage();
-    applyFilters();  
+    applyFilters();
 });
 
 document.getElementById('filter-all').addEventListener('click', () => {
-    filteredTasks = tasks.slice(); 
+    filteredTasks = tasks.slice();
     renderTasks(filteredTasks);
     updateTaskCounts();
 });
@@ -201,6 +211,7 @@ function loadTasksFromLocalStorage() {
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
         tasks = JSON.parse(storedTasks);
-        applyFilters();  
+        applyFilters();
     }
 }
+
